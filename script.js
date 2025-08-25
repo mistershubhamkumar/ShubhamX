@@ -8,4 +8,102 @@ function copyFromElement(id) {
 }
 
 function toast(msg) {
-  const t = document[43dcd9a7-70db-4a1f-b0ae-981daa162054](https://github.com/Teknokasi/batch-1/tree/def6705585ff1eae6fcd1c6cf8730cacb8f844e0/week-1%2Fday-5%2F8-html-basic-7.md?citationMarker=43dcd9a7-70db-4a1f-b0ae-981daa162054 "1")[43dcd9a7-70db-4a1f-b0ae-981daa162054](https://github.com/lzh-yi/Web-Fork-/tree/024b3e55587afdf9f05a677613a75f24e3d1803e/03-CSS%E8%BF%9B%E9%98%B6%2F04-%E5%A6%82%E4%BD%95%E8%AE%A9%E4%B8%80%E4%B8%AA%E5%85%83%E7%B4%A0%E6%B0%B4%E5%B9%B3%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD%EF%BC%9F.md?citationMarker=43dcd9a7-70db-4a1f-b0ae-981daa162054 "2")[43dcd9a7-70db-4a1f-b0ae-981daa162054](https://github.com/umarashraf71/School-Security-and-Information-Management-System/tree/3ab9ed4800209e9cd99fdcda0192d3fe3b152c88/admin%2Fadmin-login.php?citationMarker=43dcd9a7-70db-4a1f-b0ae-981daa162054 "3")
+  const t = document.createElement('div');
+  t.className = 'toast';
+  t.textContent = msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => {
+    t.classList.remove('show');
+    setTimeout(() => t.remove(), 300);
+  }, 1200);
+}
+
+// SETTINGS from settings.json
+async function buildSettingsFromJSON() {
+  const container = document.getElementById('settings-container');
+  if (!container) return;
+
+  try {
+    const resp = await fetch('settings.json');
+    const items = await resp.json();
+    container.innerHTML = '';
+
+    items.forEach((item, i) => {
+      const id = `s-card-${i + 1}`;
+
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.setAttribute('data-aos', 'fade-up');
+
+      const header = document.createElement('div');
+      header.className = 'card-header-row';
+
+      const h = document.createElement('div');
+      h.className = 'card-header';
+      h.textContent = item.title || 'Untitled';
+
+      const btn = document.createElement('button');
+      btn.className = 'copy-btn';
+      btn.textContent = 'Copy';
+      btn.addEventListener('click', () => copyFromElement(id));
+
+      header.appendChild(h);
+      header.appendChild(btn);
+
+      const pre = document.createElement('pre');
+      pre.className = 'multi-text';
+      pre.id = id;
+      pre.textContent = item.content || '';
+
+      card.appendChild(header);
+      card.appendChild(pre);
+      container.appendChild(card);
+    });
+  } catch (e) {
+    console.error(e);
+    container.innerHTML = '<p class="error">Could not load settings.json</p>';
+  }
+}
+
+// PLUGINS from plugins.json
+async function buildPluginsFromJSON() {
+  const container = document.getElementById('plugin-container');
+  if (!container) return;
+
+  try {
+    const resp = await fetch('plugins.json');
+    const items = await resp.json();
+    container.innerHTML = '';
+
+    items.forEach((item, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.setAttribute('data-aos', 'fade-up');
+
+      const h3 = document.createElement('h3');
+      h3.textContent = item.name || 'Unnamed Plugin';
+
+      const p = document.createElement('p');
+      p.textContent = `About: ${item.about || 'No description'}`;
+
+      const btn = document.createElement('button');
+      btn.textContent = 'Copy URL';
+      btn.addEventListener('click', () => copyText(item.url || '#'));
+
+      card.appendChild(h3);
+      card.appendChild(p);
+      card.appendChild(btn);
+      container.appendChild(card);
+    });
+  } catch (e) {
+    console.error(e);
+    container.innerHTML = '<p class="error">Could not load plugins.json</p>';
+  }
+}
+
+// Auto-run based on page
+document.addEventListener('DOMContentLoaded', () => {
+  buildSettingsFromJSON();
+  buildPluginsFromJSON();
+});

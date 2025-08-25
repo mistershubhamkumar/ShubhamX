@@ -1,7 +1,0 @@
-Dark Mode
-Adds dark theme to your site
-https://plugin-url.com/darkmode
-
-Animation Boost
-Adds scroll animations
-https://plugin-url.com/animate
